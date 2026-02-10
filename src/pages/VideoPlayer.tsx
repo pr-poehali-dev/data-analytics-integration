@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { Card } from '@/components/ui/card';
@@ -6,6 +7,20 @@ import { Card } from '@/components/ui/card';
 const VideoPlayer = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [showControls, setShowControls] = useState(true);
+
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
 
   const allVideos = [
     {
@@ -15,7 +30,8 @@ const VideoPlayer = () => {
       duration: "12:45",
       views: "1.2K",
       description: "В этом видео я показываю, как создать собственную платформу для видео с нуля. Разбираем архитектуру, выбор технологий и основные компоненты.",
-      uploadDate: "2 дня назад"
+      uploadDate: "2 дня назад",
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
     },
     {
       id: "2",
@@ -24,7 +40,8 @@ const VideoPlayer = () => {
       duration: "8:30",
       views: "850",
       description: "Обзор самых интересных технологий 2024 года, которые изменят индустрию разработки.",
-      uploadDate: "5 дней назад"
+      uploadDate: "5 дней назад",
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
     },
     {
       id: "3",
@@ -33,7 +50,8 @@ const VideoPlayer = () => {
       duration: "15:20",
       views: "2.1K",
       description: "Современные подходы к дизайну пользовательских интерфейсов. Тренды, инструменты и лучшие практики.",
-      uploadDate: "1 неделю назад"
+      uploadDate: "1 неделю назад",
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
     },
     {
       id: "4",
@@ -42,7 +60,8 @@ const VideoPlayer = () => {
       duration: "20:15",
       views: "3.5K",
       description: "Полное руководство по 3D моделированию с нуля до продвинутого уровня.",
-      uploadDate: "2 недели назад"
+      uploadDate: "2 недели назад",
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
     },
     {
       id: "5",
@@ -51,7 +70,8 @@ const VideoPlayer = () => {
       duration: "25:40",
       views: "5K",
       description: "Влог о путешествии по удивительным местам Азии. Культура, еда, достопримечательности.",
-      uploadDate: "3 недели назад"
+      uploadDate: "3 недели назад",
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
     },
     {
       id: "6",
@@ -60,7 +80,8 @@ const VideoPlayer = () => {
       duration: "10:05",
       views: "1.8K",
       description: "Обзор футуристических трендов в моде и аксессуарах.",
-      uploadDate: "1 месяц назад"
+      uploadDate: "1 месяц назад",
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
     }
   ];
 
@@ -93,17 +114,26 @@ const VideoPlayer = () => {
       <main className="container py-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-4">
-            <div className="aspect-video bg-black rounded-xl overflow-hidden relative group">
-              <img 
-                src={currentVideo.thumbnail} 
-                alt={currentVideo.title}
-                className="w-full h-full object-cover"
+            <div 
+              className="aspect-video bg-black rounded-xl overflow-hidden relative group cursor-pointer"
+              onMouseEnter={() => setShowControls(true)}
+              onMouseLeave={() => setShowControls(isPlaying ? false : true)}
+              onClick={togglePlay}
+            >
+              <video
+                ref={videoRef}
+                src={currentVideo.videoUrl}
+                poster={currentVideo.thumbnail}
+                className="w-full h-full object-contain"
+                onEnded={() => setIsPlaying(false)}
               />
-              <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                <button className="w-20 h-20 rounded-full bg-red-600 flex items-center justify-center hover:bg-red-700 transition-colors group-hover:scale-110 transition-transform">
-                  <Icon name="Play" size={32} className="text-white ml-1" />
-                </button>
-              </div>
+              {(!isPlaying || showControls) && (
+                <div className="absolute inset-0 bg-black/30 flex items-center justify-center transition-opacity">
+                  <button className="w-20 h-20 rounded-full bg-red-600 flex items-center justify-center hover:bg-red-700 transition-all group-hover:scale-110">
+                    <Icon name={isPlaying ? "Pause" : "Play"} size={32} className="text-white ml-1" />
+                  </button>
+                </div>
+              )}
             </div>
 
             <div>
