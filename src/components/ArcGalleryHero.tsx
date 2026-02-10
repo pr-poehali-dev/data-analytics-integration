@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 type Video = {
   id: string;
@@ -33,6 +34,7 @@ const ArcGalleryHero = ({
   cardSizeSm = 120,
   className = '',
 }: ArcGalleryHeroProps) => {
+  const navigate = useNavigate();
   const [dimensions, setDimensions] = useState({
     radius: radiusLg,
     cardSize: cardSizeLg,
@@ -92,6 +94,7 @@ const ArcGalleryHero = ({
                 <div
                   className="rounded-xl shadow-xl overflow-hidden ring-1 ring-border bg-card transition-transform hover:scale-105 w-full h-full cursor-pointer group"
                   style={{ transform: `rotate(${angle / 4}deg)` }}
+                  onClick={() => navigate(`/watch/${video.id}`)}
                 >
                   <div className="relative w-full h-full">
                     <img
@@ -130,10 +133,16 @@ const ArcGalleryHero = ({
             Моя личная видеоплатформа для хранения и просмотра видео
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button className="w-full sm:w-auto px-8 py-3 rounded-full bg-red-600 text-white hover:bg-red-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-semibold">
+            <button 
+              onClick={() => navigate('/catalog')}
+              className="w-full sm:w-auto px-8 py-3 rounded-full bg-red-600 text-white hover:bg-red-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-semibold"
+            >
               Смотреть видео
             </button>
-            <button className="w-full sm:w-auto px-8 py-3 rounded-full border-2 border-border hover:bg-accent hover:text-accent-foreground transition-all duration-200 font-semibold">
+            <button 
+              onClick={() => navigate('/upload')}
+              className="w-full sm:w-auto px-8 py-3 rounded-full border-2 border-border hover:bg-accent hover:text-accent-foreground transition-all duration-200 font-semibold"
+            >
               Загрузить видео
             </button>
           </div>
